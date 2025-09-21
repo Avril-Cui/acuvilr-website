@@ -1,8 +1,65 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [showStickyNav, setShowStickyNav] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const frontPageHeight = window.innerHeight;
+      const scrollPosition = window.scrollY;
+
+      if (scrollPosition > frontPageHeight - 100) {
+        setShowStickyNav(true);
+      } else {
+        setShowStickyNav(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   return (
     <>
+      {/* Sticky Navigation */}
+      {showStickyNav && (
+        <div className="fixed top-4 left-0 right-0 z-50 transition-all duration-300">
+          <nav className="flex justify-center space-x-8 text-lg py-4">
+            <a
+              href="#about"
+              className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+            >
+              About
+            </a>
+            <span className="text-yellow-200">•</span>
+            <a
+              href="#projects"
+              className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+            >
+              Project
+            </a>
+            <span className="text-yellow-200">•</span>
+            <a
+              href="#blog"
+              className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+            >
+              Blog
+            </a>
+            <span className="text-yellow-200">•</span>
+            <a
+              href="https://github.com/Avril-Cui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+            >
+              Repo
+            </a>
+          </nav>
+        </div>
+      )}
+
       {/* Front Page */}
       <div className="relative min-h-screen overflow-hidden">
         {/* Background Image */}
@@ -66,7 +123,7 @@ export default function Home() {
 
         {/* Repo Spacecraft - Moved down below others */}
         <div className="absolute top-44 left-2/3 transform -rotate-6 float-slow-delayed-3">
-          <a href="#repo">
+          <a href="https://github.com/Avril-Cui" target="_blank" rel="noopener noreferrer">
             <Image
               src="/repo.png"
               alt="Repository"
@@ -109,17 +166,19 @@ export default function Home() {
             </a>
             <span className="text-yellow-200">•</span>
             <a
-              href="#repo"
-              className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
-            >
-              Repo
-            </a>
-            <span className="text-yellow-200">•</span>
-            <a
               href="#blog"
               className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
             >
               Blog
+            </a>
+            <span className="text-yellow-200">•</span>
+            <a
+              href="https://github.com/Avril-Cui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+            >
+              Repo
             </a>
           </nav>
         </div>
@@ -136,9 +195,10 @@ export default function Home() {
         />
 
         {/* About Content */}
-        <div className="relative z-10 px-8 pt-20 pb-20">
+        <div className="relative z-10 px-8 pt-6 pb-20">
+
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl md:text-6xl font-semibold text-white mb-4 mt-4 text-center">
+            <h2 className="text-4xl md:text-6xl font-semibold text-white mb-4 mt-16 text-center">
               About Me
             </h2>
             <div className="flex flex-col md:flex-row items-start gap-8 max-w-5xl md:pl-32">
