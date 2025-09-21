@@ -160,12 +160,12 @@ export default function Home() {
                   software dev, agentic automation, and tech entrepreneurship.
                 </p>
                 <p>
-                  At MIT, I'm part of HackMIT DevOps, MEC, and AI@MIT. I founded
-                  Aspect, a gamified stock market simulator that has reached
+                  At MIT, I'm part of <a href="https://hackmit.org/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">HackMIT</a> DevOps, <a href="https://mec.mit.edu/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">MEC</a>, and AI@MIT. I founded
+                  <a href="https://www.aspect-game.com/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline"> Aspect</a>, a gamified stock market simulator that has reached
                   thousands of learners and collaborated with educational
                   institutions worldwide. I'm currently building & shipping Neo,
                   a multi-agent AI personal assistant that streamlines daily
-                  productivity through natural voice interaction.
+                  productivity through <a href="https://drive.google.com/file/d/1ZWNOZaTCxiL1DWmf01JTrUpBUlMakscg/view" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">natural voice interaction</a>.
                 </p>
                 <p>
                   I have full-stack experience in the industry, including
