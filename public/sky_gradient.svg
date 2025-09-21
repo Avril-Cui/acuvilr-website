@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1792" height="1024" viewBox="0 0 1792 1024">
+  <defs>
+    <!-- Smooth vertical gradient: deep vivid blue -> bright blue -> golden orange -->
+    <linearGradient id="twilight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1e7a"/>      <!-- deep vivid blue -->
+      <stop offset="35%" stop-color="#0e3fa5"/>     <!-- rich blue -->
+      <stop offset="60%" stop-color="#2aa0df"/>     <!-- lighter blue -->
+      <stop offset="78%" stop-color="#68c1da"/>     <!-- cyan tint like original mock -->
+      <stop offset="90%" stop-color="#f0b34a"/>     <!-- soft amber -->
+      <stop offset="100%" stop-color="#ff8a1e"/>    <!-- warm orange at horizon -->
+    </linearGradient>
+
+    <!-- subtle star glow -->
+    <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="white" stop-opacity="1"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- gradient sky rectangle -->
+  <rect x="0" y="0" width="1792" height="1024" fill="url(#twilight)"/>
+
+  <!-- minimal stars (very few, small) -->
+  <g fill="white" opacity="0.9">
+    <circle cx="210" cy="140" r="1.2"/>
+    <circle cx="520" cy="110" r="1"/>
+    <circle cx="845" cy="80" r="1.4"/>
+    <circle cx="1210" cy="130" r="1.1"/>
+    <circle cx="1520" cy="95" r="1.3"/>
+    <circle cx="980" cy="210" r="0.9"/>
+    <circle cx="360" cy="240" r="0.9"/>
+    <circle cx="1390" cy="230" r="0.8"/>
+  </g>
+
+  <!-- a couple of soft glows to suggest distant stars -->
+  <g opacity="0.35">
+    <circle cx="660" cy="120" r="6" fill="url(#starGlow)"/>
+    <circle cx="1460" cy="180" r="5" fill="url(#starGlow)"/>
+  </g>
+</svg>

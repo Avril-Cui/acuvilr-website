@@ -2,102 +2,129 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/background.jpg)'
+        }}
+      />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+      {/* Earth floating below Hi text - bigger */}
+      <div className="absolute top-86 left-20 w-24 h-24 md:w-28 md:h-28">
+        <Image
+          src="/earth.png"
+          alt="Earth"
+          width={112}
+          height={112}
+          className="rounded-full w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Spacecraft Menu Items floating in sky - Moved right to make space for Hi text */}
+      {/* About Spacecraft - Moved to align with Project */}
+      <div className="absolute top-16 left-1/2 transform rotate-3 float-slow">
+        <a href="#about">
+          <Image
+            src="/about.png"
+            alt="About"
+            width={180}
+            height={120}
+            className="w-auto h-auto hover:scale-110 transition-transform duration-300"
+          />
+        </a>
+      </div>
+
+      {/* Project Spacecraft - Spaced out more */}
+      <div className="absolute top-10 right-80 transform rotate-12 float-slow-delayed">
+        <a href="#projects">
+          <Image
+            src="/project.png"
+            alt="Projects"
+            width={160}
+            height={110}
+            className="w-auto h-auto hover:scale-110 transition-transform duration-300"
+          />
+        </a>
+      </div>
+
+      {/* Blog Spacecraft - Spaced out more */}
+      <div className="absolute top-12 right-16 transform -rotate-3 float-slow-delayed-2">
+        <a href="#blog">
+          <Image
+            src="/blog.png"
+            alt="Blog"
+            width={170}
+            height={115}
+            className="w-auto h-auto hover:scale-110 transition-transform duration-300"
+          />
+        </a>
+      </div>
+
+      {/* Repo Spacecraft - Moved down below others */}
+      <div className="absolute top-44 left-2/3 transform -rotate-6 float-slow-delayed-3">
+        <a href="#repo">
+          <Image
+            src="/repo.png"
+            alt="Repository"
+            width={175}
+            height={118}
+            className="w-auto h-auto hover:scale-110 transition-transform duration-300"
+          />
+        </a>
+      </div>
+
+      {/* Hi, I'm Avril Text - positioned in top left */}
+      <div className="absolute top-8 left-20">
+        <img
+          src="/hi.png"
+          alt="Hi, I'm Avril"
+          className="w-[700px] h-auto"
+        />
+      </div>
+
+      {/* Character with Dog - bigger and moved slightly right */}
+      <div className="absolute bottom-16 right-30">
+        <img
+          src="/me_friday1.png"
+          alt="Avril with Friday the bulldog"
+          className="w-96 h-auto"
+        />
+      </div>
+
+      {/* Navigation Menu - bottom center */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+        <nav className="flex space-x-8 text-lg">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#about"
+            className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            About
           </a>
+          <span className="text-yellow-200">•</span>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#projects"
+            className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
           >
-            Read our docs
+            Project
           </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <span className="text-yellow-200">•</span>
+          <a
+            href="#repo"
+            className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+          >
+            Repo
+          </a>
+          <span className="text-yellow-200">•</span>
+          <a
+            href="#blog"
+            className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+          >
+            Blog
+          </a>
+        </nav>
+      </div>
     </div>
   );
 }
