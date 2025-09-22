@@ -5,29 +5,22 @@ import path from 'path';
 import BackButton from './BackButton';
 
 export const metadata: Metadata = {
-  title: 'Lift - Gamified Weightlifting Community App',
-  description: 'An application that provides gamification and community to users who workout alone during weightlifting sessions.',
+  title: 'Hello visitor! Welcome to my personal website!',
+  description: 'Hope you enjoy my website. Here is a picture of my bulldog Friday.',
 };
 
 async function getMarkdownContent() {
-  const filePath = path.join(process.cwd(), 'app', 'projects', 'lift', 'article.md');
+  const filePath = path.join(process.cwd(), 'app', 'blog', 'hello-visitor', 'article.md');
   const fileContent = await fs.readFile(filePath, 'utf8');
   return fileContent;
 }
 
-export default async function LiftPage() {
+export default async function HelloVisitorPage() {
   const markdownContent = await getMarkdownContent();
 
   return (
     <div className="min-h-screen bg-white text-black">
       <div className="max-w-4xl mx-auto px-8 py-16">
-        {/* Tags */}
-        <div className="flex flex-wrap gap-3 mb-12">
-          <span className="px-4 py-2 text-white text-sm rounded-full" style={{ backgroundColor: '#3CBCC3' }}>personal project</span>
-          <span className="px-4 py-2 text-white text-sm rounded-full" style={{ backgroundColor: '#D05A27' }}>full-stack</span>
-          <span className="px-4 py-2 text-white text-sm rounded-full" style={{ backgroundColor: '#A33C21' }}>hardware</span>
-        </div>
-
         {/* Markdown Content */}
         <article className="prose prose-xl max-w-none">
           <ReactMarkdown
@@ -40,16 +33,6 @@ export default async function LiftPage() {
               ol: ({children}) => <ol className="list-decimal list-outside ml-6 mb-4 space-y-2 text-gray-800">{children}</ol>,
               li: ({children}) => <li className="text-gray-800 leading-relaxed">{children}</li>,
               strong: ({children}) => <strong className="font-semibold text-black">{children}</strong>,
-              code: ({inline, children}) =>
-                inline ? (
-                  <code className="bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm font-mono">
-                    {children}
-                  </code>
-                ) : (
-                  <pre className="bg-gray-100 text-gray-800 p-4 rounded-lg overflow-x-auto mb-4">
-                    <code className="font-mono text-sm">{children}</code>
-                  </pre>
-                ),
               img: ({src, alt}) => (
                 <div className="my-8 flex flex-col items-center">
                   <img

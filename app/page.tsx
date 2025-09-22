@@ -235,11 +235,11 @@ export default function Home() {
                 </p>
                 <p>
                   At MIT, I'm part of <a href="https://hackmit.org/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">HackMIT</a> DevOps, <a href="https://mec.mit.edu/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">MEC</a>, and AI@MIT. I founded
-                  <a href="https://www.aspect-game.com/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline"> Aspect</a>, a gamified stock market simulator that has reached
+                  <a href="https://www.aspect-game.com/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline"> Aspect</a>, a gamified <a href="https://drive.google.com/file/d/1ZWNOZaTCxiL1DWmf01JTrUpBUlMakscg/view" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">stock market simulator</a> that has reached
                   thousands of learners and collaborated with educational
                   institutions worldwide. I'm currently building & shipping Neo,
                   a multi-agent AI personal assistant that streamlines daily
-                  productivity through <a href="https://drive.google.com/file/d/1ZWNOZaTCxiL1DWmf01JTrUpBUlMakscg/view" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">natural voice interaction</a>.
+                  productivity through natural voice interaction.
                 </p>
                 <p>
                   I have full-stack experience in the industry, including
@@ -275,7 +275,7 @@ export default function Home() {
               {/* Aspect Project */}
               <div
                 className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
-                style={{ backgroundColor: 'rgba(13, 27, 61, 0.4)', borderRadius: '15px' }}
+                style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('/projects/aspect', '_blank')}
               >
                 <div className="w-1/2">
@@ -302,7 +302,7 @@ export default function Home() {
               {/* Lift Project */}
               <div
                 className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
-                style={{ backgroundColor: 'rgba(13, 27, 61, 0.4)', borderRadius: '15px' }}
+                style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('/projects/lift', '_blank')}
               >
                 <div className="w-1/2">
@@ -328,7 +328,7 @@ export default function Home() {
               {/* TripleTile Project */}
               <div
                 className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
-                style={{ backgroundColor: 'rgba(13, 27, 61, 0.4)', borderRadius: '15px' }}
+                style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('https://tripletile.hackmit.org/', '_blank')}
               >
                 <div className="w-1/2">
@@ -354,7 +354,7 @@ export default function Home() {
               {/* AppReader Project */}
               <div
                 className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
-                style={{ backgroundColor: 'rgba(13, 27, 61, 0.4)', borderRadius: '15px' }}
+                style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
               >
                 <div className="w-1/2">
                   <img
@@ -382,7 +382,7 @@ export default function Home() {
               {/* Plume Project */}
               <div
                 className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
-                style={{ backgroundColor: 'rgba(13, 27, 61, 0.4)', borderRadius: '15px' }}
+                style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('https://plume.hackmit.org/', '_blank')}
               >
                 <div className="w-1/2">
@@ -403,6 +403,50 @@ export default function Home() {
                     <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#5C5C68' }}>SQL</span>
                     <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#A33C21' }}>React</span>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Blog Section */}
+      <div id="blog" className="relative min-h-screen">
+        {/* Blog Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url(/blog_background.png)",
+          }}
+        />
+
+        {/* Blog Content */}
+        <div className="relative z-10 px-8 pt-6 pb-20">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-semibold text-white mb-8 mt-16 text-center">
+              Blog
+            </h2>
+
+            {/* Blog Grid */}
+            <div className="flex flex-col gap-8 max-w-5xl mx-auto mt-24">
+              {/* Hello Visitor Blog Post */}
+              <div
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
+                style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
+                onClick={() => window.open('/blog/hello-visitor', '_blank')}
+              >
+                <div className="w-1/2">
+                  <img
+                    src="/friday.jpg"
+                    alt="Hello Visitor Blog Post"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="w-1/2 p-6 flex flex-col justify-center">
+                  <h3 className="text-3xl font-bold text-white mb-4">Hello visitor! Welcome to my personal website!</h3>
+                  <p className="text-white text-base leading-relaxed mb-6">
+                    Hope you enjoy my website. Here is a picture of my bulldog Friday.
+                  </p>
                 </div>
               </div>
             </div>
