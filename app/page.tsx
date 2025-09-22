@@ -228,16 +228,16 @@ export default function Home() {
               {/* Text Content */}
               <div className="text-base md:text-lg text-white leading-normal space-y-3 text-left flex-1 max-w-xl">
                 <p>
-                  Hi, I'm Fuqi (Avril) Cui, an MIT student studying 6-3 Computer
+                  Hi, I&apos;m Fuqi (Avril) Cui, an MIT student studying 6-3 Computer
                   Science. Also a so-called full-stack developer: working with
-                  Python, Next.js, Typescript, and SQL, etc. I'm interested in
+                  Python, Next.js, Typescript, and SQL, etc. I&apos;m interested in
                   software dev, agentic automation, and tech entrepreneurship.
                 </p>
                 <p>
-                  At MIT, I'm part of <a href="https://hackmit.org/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">HackMIT</a> DevOps, <a href="https://mec.mit.edu/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">MEC</a>, and AI@MIT. I founded
+                  At MIT, I&apos;m part of <a href="https://hackmit.org/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">HackMIT</a> DevOps, <a href="https://mec.mit.edu/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">MEC</a>, and AI@MIT. I founded
                   <a href="https://www.aspect-game.com/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline"> Aspect</a>, a gamified <a href="https://drive.google.com/file/d/1ZWNOZaTCxiL1DWmf01JTrUpBUlMakscg/view" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">stock market simulator</a> that has reached
                   thousands of learners and collaborated with educational
-                  institutions worldwide. I'm currently building & shipping Neo,
+                  institutions worldwide. I&apos;m currently building & shipping Neo,
                   a multi-agent AI personal assistant that streamlines daily
                   productivity through natural voice interaction.
                 </p>
@@ -366,7 +366,7 @@ export default function Home() {
                 <div className="w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">AppReader</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
-                    A website for the team to review and evaluate thousands of hackers' applications, and auto-generate admission decisions based on team opinions.
+                    A website for the team to review and evaluate thousands of hackers&apos; applications, and auto-generate admission decisions based on team opinions.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#D05A27' }}>full-stack</span>
@@ -395,7 +395,7 @@ export default function Home() {
                 <div className="w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">Plume</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
-                    An all-in-one platform for managing HackMIT's hackathon events.
+                    An all-in-one platform for managing HackMIT&apos;s hackathon events.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#D05A27' }}>full-stack</span>

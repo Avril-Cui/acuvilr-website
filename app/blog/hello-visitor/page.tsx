@@ -36,7 +36,7 @@ export default async function HelloVisitorPage() {
               img: ({src, alt}) => (
                 <div className="my-8 flex flex-col items-center">
                   <img
-                    src={src?.startsWith('images/') ? `/${src}` : src}
+                    src={typeof src === 'string' && src.startsWith('images/') ? `/${src}` : src}
                     alt={alt}
                     className="w-4/5 rounded-lg"
                   />
