@@ -246,22 +246,19 @@ export default function Home() {
         {/* About Content */}
         <div className="relative z-10 px-8 pt-6 pb-20">
 
-          <div className="max-w-6xl mx-auto mt-26">
-            {/* <h2 className="text-4xl md:text-6xl text-white mb-4 mt-16 text-center">
-              About Me
-            </h2> */}
+          <div className="max-w-6xl mx-auto mt-40 md:mt-26">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8 max-w-5xl md:pl-32">
-              {/* Profile Image */}
-              <div className="flex-shrink-0 mt-10">
+              {/* Profile Image - hidden on mobile */}
+              <div className="hidden md:block flex-shrink-0 mt-10">
                 <img
                   src="/avril.jpg"
                   alt="Avril Cui"
-                  className="w-48 h-60 md:w-64 md:h-80 rounded-lg object-cover shadow-2xl"
+                  className="w-64 h-80 rounded-lg object-cover shadow-2xl"
                 />
               </div>
 
               {/* Text Content */}
-              <div className="text-base md:text-lg text-white leading-normal space-y-3 text-left flex-1 max-w-xl">
+              <div className="text-base md:text-lg text-white leading-tight md:leading-normal space-y-2 md:space-y-3 text-left flex-1 max-w-xl">
                 <p>
                   Hi, I&apos;m Fuqi (Avril) Cui, an MIT student studying 6-3 Computer
                   Science. Also a so-called full-stack developer: working with
