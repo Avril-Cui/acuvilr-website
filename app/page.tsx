@@ -149,7 +149,7 @@ export default function Home() {
         </div>
 
         {/* Hi, I'm Avril Text - responsive positioning */}
-        <div className="absolute top-20 md:top-8 left-1/2 transform -translate-x-1/2 md:transform-none md:left-20 w-[480px] md:w-[700px]">
+        <div className="absolute top-20 md:top-8 left-1/2 transform -translate-x-1/2 md:transform-none md:left-128 w-[480px] md:w-[700px]">
           <img src="/hi.png" alt="Hi, I'm Avril" className="w-full h-auto" />
         </div>
 
