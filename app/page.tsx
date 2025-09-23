@@ -37,9 +37,9 @@ export default function Home() {
   }, []);
   return (
     <>
-      {/* Sticky Navigation */}
+      {/* Sticky Navigation - hidden on mobile */}
       {showStickyNav && (
-        <div className="fixed top-4 left-0 right-0 z-50 transition-all duration-300">
+        <div className="hidden md:block fixed top-4 left-0 right-0 z-50 transition-all duration-300">
           <nav className="flex justify-center space-x-8 text-lg py-4">
             <a
               href="#about"
@@ -84,8 +84,8 @@ export default function Home() {
           }}
         />
 
-        {/* Earth floating below Hi text - bigger */}
-        <div className="absolute top-86 left-20 w-24 h-24 md:w-28 md:h-28">
+        {/* Earth floating below Hi text - responsive */}
+        <div className="absolute top-80 md:top-86 left-6 md:left-20 w-16 h-16 md:w-28 md:h-28">
           <Image
             src="/earth.png"
             alt="Earth"
@@ -95,9 +95,9 @@ export default function Home() {
           />
         </div>
 
-        {/* Spacecraft Menu Items floating in sky - Moved right to make space for Hi text */}
+        {/* Spacecraft Menu Items floating in sky - Hidden on mobile */}
         {/* About Spacecraft - Moved to align with Project */}
-        <div className="absolute top-16 left-1/2 transform rotate-3 float-slow">
+        <div className="hidden md:block absolute top-16 left-1/2 transform rotate-3 float-slow">
           <a href="#about">
             <Image
               src="/about.png"
@@ -110,7 +110,7 @@ export default function Home() {
         </div>
 
         {/* Project Spacecraft - Spaced out more */}
-        <div className="absolute top-10 right-80 transform rotate-12 float-slow-delayed">
+        <div className="hidden md:block absolute top-10 right-80 transform rotate-12 float-slow-delayed">
           <a href="#projects">
             <Image
               src="/project.png"
@@ -123,7 +123,7 @@ export default function Home() {
         </div>
 
         {/* Blog Spacecraft - Spaced out more */}
-        <div className="absolute top-12 right-16 transform -rotate-3 float-slow-delayed-2">
+        <div className="hidden md:block absolute top-12 right-16 transform -rotate-3 float-slow-delayed-2">
           <a href="#blog">
             <Image
               src="/blog.png"
@@ -136,7 +136,7 @@ export default function Home() {
         </div>
 
         {/* Repo Spacecraft - Moved down below others */}
-        <div className="absolute top-44 left-2/3 transform -rotate-6 float-slow-delayed-3">
+        <div className="hidden md:block absolute top-44 left-2/3 transform -rotate-6 float-slow-delayed-3">
           <a href="https://github.com/Avril-Cui" target="_blank" rel="noopener noreferrer">
             <Image
               src="/repo.png"
@@ -148,22 +148,57 @@ export default function Home() {
           </a>
         </div>
 
-        {/* Hi, I'm Avril Text - positioned in top left */}
-        <div className="absolute top-8 left-20">
-          <img src="/hi.png" alt="Hi, I'm Avril" className="w-[700px] h-auto" />
+        {/* Hi, I'm Avril Text - responsive positioning */}
+        <div className="absolute top-20 md:top-8 left-1/2 transform -translate-x-1/2 md:transform-none md:left-20 w-[480px] md:w-[700px]">
+          <img src="/hi.png" alt="Hi, I'm Avril" className="w-full h-auto" />
         </div>
 
-        {/* Character with Dog - bigger and moved slightly right */}
-        <div className="absolute bottom-16 right-30">
+        {/* Character with Dog - responsive positioning */}
+        <div className="absolute bottom-20 md:bottom-16 left-1/2 transform -translate-x-1/2 md:transform-none md:left-auto md:right-30 w-[350px] md:w-96">
           <img
             src="/me_friday1.png"
             alt="Avril with Friday the bulldog"
-            className="w-96 h-auto"
+            className="w-full h-auto"
           />
         </div>
 
-        {/* Navigation Menu - bottom center */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+        {/* Mobile Navigation - fixed at top (only on mobile) */}
+        <div className="md:hidden fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+          <nav className="flex space-x-4 text-sm px-4 py-2 rounded-lg" style={{ backgroundColor: 'rgba(156, 163, 175, 0.3)', backdropFilter: 'blur(4px)' }}>
+            <a
+              href="#about"
+              className={`text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide ${activeSection === 'about' ? 'underline' : ''}`}
+            >
+              About
+            </a>
+            <span className="text-yellow-200">•</span>
+            <a
+              href="#projects"
+              className={`text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide ${activeSection === 'projects' ? 'underline' : ''}`}
+            >
+              Project
+            </a>
+            <span className="text-yellow-200">•</span>
+            <a
+              href="#blog"
+              className={`text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide ${activeSection === 'blog' ? 'underline' : ''}`}
+            >
+              Blog
+            </a>
+            <span className="text-yellow-200">•</span>
+            <a
+              href="https://github.com/Avril-Cui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-yellow-200 hover:text-yellow-100 transition-colors duration-300 font-medium tracking-wide"
+            >
+              Repo
+            </a>
+          </nav>
+        </div>
+
+        {/* Navigation Menu - bottom center (hidden on mobile) */}
+        <div className="hidden md:block absolute bottom-10 left-1/2 transform -translate-x-1/2">
           <nav className="flex space-x-8 text-lg">
             <a
               href="#about"
@@ -215,13 +250,13 @@ export default function Home() {
             {/* <h2 className="text-4xl md:text-6xl text-white mb-4 mt-16 text-center">
               About Me
             </h2> */}
-            <div className="flex flex-col md:flex-row items-start gap-8 max-w-5xl md:pl-32">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-8 max-w-5xl md:pl-32">
               {/* Profile Image */}
               <div className="flex-shrink-0 mt-10">
                 <img
                   src="/avril.jpg"
                   alt="Avril Cui"
-                  className="w-64 h-80 rounded-lg object-cover shadow-2xl"
+                  className="w-48 h-60 md:w-64 md:h-80 rounded-lg object-cover shadow-2xl"
                 />
               </div>
 
@@ -274,18 +309,18 @@ export default function Home() {
             <div className="flex flex-col gap-8 max-w-5xl mx-auto mt-24">
               {/* Aspect Project */}
               <div
-                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col md:flex-row h-auto md:h-80"
                 style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('/projects/aspect', '_blank')}
               >
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2">
                   <img
                     src="/aspect.jpg"
                     alt="Aspect Project"
-                    className="w-full h-full object-cover"
+                    className="w-full h-48 md:h-full object-cover"
                   />
                 </div>
-                <div className="w-1/2 p-6 flex flex-col justify-center">
+                <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">Aspect</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
                     A website that gamifies the learning of finance and trading by creating a market with diverse events. Targeting young users interested in trading and finance, Aspect provides exciting gaming mechanics and a cool user interface.
@@ -301,18 +336,18 @@ export default function Home() {
 
               {/* Lift Project */}
               <div
-                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col md:flex-row h-auto md:h-80"
                 style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('/projects/lift', '_blank')}
               >
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2">
                   <img
                     src="/lift.png"
                     alt="Lift Project"
-                    className="w-full h-full object-cover"
+                    className="w-full h-48 md:h-full object-cover"
                   />
                 </div>
-                <div className="w-1/2 p-6 flex flex-col justify-center">
+                <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">Lift</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
                     Lift is an application that provides gamification and community to users who workout alone during weightlifting sessions. It contains session analytical data, visualization, daily challenges, and leaderboards.
@@ -327,18 +362,18 @@ export default function Home() {
 
               {/* TripleTile Project */}
               <div
-                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col md:flex-row h-auto md:h-80"
                 style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('https://tripletile.hackmit.org/', '_blank')}
               >
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2">
                   <img
                     src="/tripletile.png"
                     alt="TripleTile Project"
-                    className="w-full h-full object-cover"
+                    className="w-full h-48 md:h-full object-cover"
                   />
                 </div>
-                <div className="w-1/2 p-6 flex flex-col justify-center">
+                <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">TripleTile</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
                     An algorithmic puzzle challenge I made for CoolHackGames, a series of games for HackMIT 2025 admission.
@@ -353,17 +388,17 @@ export default function Home() {
 
               {/* AppReader Project */}
               <div
-                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col md:flex-row h-auto md:h-80"
                 style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
               >
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2">
                   <img
                     src="/appreader.png"
                     alt="AppReader Project"
-                    className="w-full h-full object-cover"
+                    className="w-full h-48 md:h-full object-cover"
                   />
                 </div>
-                <div className="w-1/2 p-6 flex flex-col justify-center">
+                <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">AppReader</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
                     A website for the team to review and evaluate thousands of hackers&apos; applications, and auto-generate admission decisions based on team opinions.
@@ -381,18 +416,18 @@ export default function Home() {
 
               {/* Plume Project */}
               <div
-                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col md:flex-row h-auto md:h-80"
                 style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('https://plume.hackmit.org/', '_blank')}
               >
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2">
                   <img
                     src="/plume.png"
                     alt="Plume Project"
-                    className="w-full h-full object-cover"
+                    className="w-full h-48 md:h-full object-cover"
                   />
                 </div>
-                <div className="w-1/2 p-6 flex flex-col justify-center">
+                <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">Plume</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
                     An all-in-one platform for managing HackMIT&apos;s hackathon events.
@@ -431,18 +466,18 @@ export default function Home() {
             <div className="flex flex-col gap-8 max-w-5xl mx-auto mt-24">
               {/* Hello Visitor Blog Post */}
               <div
-                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-row h-80"
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col md:flex-row h-auto md:h-80"
                 style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
                 onClick={() => window.open('/blog/hello-visitor', '_blank')}
               >
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2">
                   <img
                     src="/friday.jpg"
                     alt="Hello Visitor Blog Post"
-                    className="w-full h-full object-cover"
+                    className="w-full h-48 md:h-full object-cover"
                   />
                 </div>
-                <div className="w-1/2 p-6 flex flex-col justify-center">
+                <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
                   <h3 className="text-3xl font-bold text-white mb-4">Hello visitor! Welcome to my personal website!</h3>
                   <p className="text-white text-base leading-relaxed mb-6">
                     Hope you enjoy my website. Here is a picture of my bulldog Friday.
