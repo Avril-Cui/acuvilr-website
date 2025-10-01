@@ -244,12 +244,12 @@ export default function Home() {
         />
 
         {/* About Content */}
-        <div className="relative z-10 px-8 pt-6 pb-20">
+        <div className="relative z-10 px-4 md:px-8 pt-6 pb-20">
 
-          <div className="max-w-6xl mx-auto mt-40 lg:mt-26">
-            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 max-w-5xl lg:pl-32">
+          <div className="mt-48 md:mt-44 lg:mt-40 xl:[margin-top:clamp(5rem,20rem-12vw,7.5rem)] 2xl:mt-20 ml-20">
+            <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8">
               {/* Profile Image - hidden on mobile */}
-              <div className="hidden lg:block flex-shrink-0 mt-10">
+              <div className="hidden lg:block flex-shrink-0">
                 <img
                   src="/avril.jpg"
                   alt="Avril Cui"
@@ -258,31 +258,44 @@ export default function Home() {
               </div>
 
               {/* Text Content */}
-              <div className="text-base lg:text-lg text-white leading-tight lg:leading-normal space-y-2 lg:space-y-3 text-left flex-1 max-w-xl">
-                <p>
-                  Hi, I&apos;m Fuqi (Avril) Cui, an MIT student studying 6-3 Computer
-                  Science. Also a so-called full-stack developer: working with
-                  Python, Next.js, Typescript, and SQL, etc. I&apos;m interested in
-                  software dev, agentic automation, and tech entrepreneurship.
-                </p>
-                <p>
-                  At MIT, I&apos;m part of <a href="https://hackmit.org/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">HackMIT</a> DevOps, <a href="https://mec.mit.edu/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">MEC</a>, and AI@MIT. I founded
-                  <a href="https://www.aspect-game.com/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline"> Aspect</a>, a gamified <a href="https://drive.google.com/file/d/1ZWNOZaTCxiL1DWmf01JTrUpBUlMakscg/view" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">stock market simulator</a> that has reached
-                  thousands of learners and collaborated with educational
-                  institutions worldwide. I&apos;m currently building & shipping Neo,
-                  a multi-agent AI personal assistant that streamlines daily
-                  productivity through natural voice interaction.
-                </p>
-                <p>
-                  I have full-stack experience in the industry, including
-                  interning at the frontend team at Tencent for Business Pay
-                  products, and building computer vision algos for color quality
-                  assessment of encoder and decoder algorithms at Bilibili.
-                </p>
-                <p className="text-yellow-200 font-medium">
-                  Feel free to reach out to me via email: avrilcui at mit dot
-                  edu
-                </p>
+              <div className="text-sm md:text-base lg:text-lg text-white leading-tight lg:leading-normal space-y-2 lg:space-y-3 text-left flex-1 max-w-full lg:max-w-xl px-2 lg:px-0">
+                {/* Desktop text */}
+                <div className="hidden lg:block">
+                  <p>
+                    Hi, I&apos;m Fuqi (Avril) Cui, an MIT student studying 6-3 Computer
+                    Science. Also a so-called full-stack developer: working with
+                    Python, Next.js, Typescript, and SQL, etc. I&apos;m interested in
+                    software dev, agentic automation, and tech entrepreneurship.
+                  </p>
+                  <p>
+                    At MIT, I&apos;m part of <a href="https://hackmit.org/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">HackMIT</a> DevOps, <a href="https://mec.mit.edu/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">MEC</a>, and AI@MIT. I founded
+                    <a href="https://www.aspect-game.com/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline"> Aspect</a>, a gamified <a href="https://drive.google.com/file/d/1ZWNOZaTCxiL1DWmf01JTrUpBUlMakscg/view" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">stock market simulator</a> that has reached
+                    thousands of learners and collaborated with educational
+                    institutions worldwide. I&apos;m currently building & shipping Neo,
+                    a multi-agent AI personal assistant that streamlines daily
+                    productivity through natural voice interaction.
+                  </p>
+                  <p>
+                    I have full-stack experience in the industry, including
+                    interning at the frontend team at Tencent for Business Pay
+                    products, and building computer vision algos for color quality
+                    assessment of encoder and decoder algorithms at Bilibili.
+                  </p>
+                  <p className="text-yellow-200 font-medium">
+                    Feel free to reach out to me via email: avrilcui at mit dot
+                    edu
+                  </p>
+                </div>
+
+                {/* Mobile text */}
+                <div className="lg:hidden">
+                  <p>
+                    Hi, I&apos;m Fuqi (Avril) Cui, an MIT student studying 6-3 Computer Science.  I&apos;m interested in software dev, agentic automation, and tech entrepreneurship. At MIT, I&apos;m part of <a href="https://hackmit.org/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">HackMIT</a> DevOps, <a href="https://mec.mit.edu/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">MEC</a>, and AI@MIT. I founded <a href="https://www.aspect-game.com/" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline"> Aspect</a>, a gamified <a href="https://drive.google.com/file/d/1ZWNOZaTCxiL1DWmf01JTrUpBUlMakscg/view" target="_blank" rel="noopener noreferrer" className="text-yellow-200 hover:text-yellow-100 hover:underline">stock market simulator</a> that has reached thousands of learners and collaborated with educational institutions worldwide. I&apos;m currently building & shipping Neo, a multi-agent AI personal assistant that streamlines daily productivity through natural voice interaction. I have full-stack experience in the industry, including interning at the frontend team at Tencent for Business Pay products, and building computer vision algos for color quality assessment of encoder and decoder algorithms at Bilibili.
+                  </p>
+                  <p className="text-yellow-200 font-medium">
+                    Feel free to reach out to me via email: avrilcui at mit dot edu
+                  </p>
+                </div>
               </div>
             </div>
           </div>
