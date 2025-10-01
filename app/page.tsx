@@ -246,8 +246,8 @@ export default function Home() {
         {/* About Content */}
         <div className="relative z-10 px-4 md:px-8 pt-6 pb-20">
 
-          <div className="mt-48 md:mt-44 lg:mt-40 xl:[margin-top:clamp(5rem,20rem-12vw,7.5rem)] 2xl:mt-20 lg:ml-20">
-            <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8">
+          <div className="mt-48 md:mt-44 lg:mt-40 xl:[margin-top:clamp(5rem,20rem-12vw,7.5rem)] 2xl:mt-20">
+            <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8 lg:justify-center lg:max-w-6xl lg:mx-auto">
               {/* Profile Image - hidden on mobile */}
               <div className="hidden lg:block flex-shrink-0">
                 <img
@@ -258,7 +258,7 @@ export default function Home() {
               </div>
 
               {/* Text Content */}
-              <div className="text-sm md:text-base lg:text-lg text-white leading-tight lg:leading-normal space-y-2 lg:space-y-3 text-left flex-1 max-w-full lg:max-w-xl lg:px-0">
+              <div className="text-sm md:text-base lg:text-lg text-white leading-tight lg:leading-normal space-y-2 lg:space-y-3 text-left flex-1 max-w-full lg:max-w-xl px-2 lg:px-0">
                 {/* Desktop text */}
                 <div className="hidden lg:block">
                   <p>
