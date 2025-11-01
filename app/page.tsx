@@ -344,6 +344,33 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Neo Project */}
+              <div
+                className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col lg:flex-row h-auto lg:h-80"
+                style={{ backgroundColor: 'rgba(200, 200, 200, 0.3)', borderRadius: '15px' }}
+                onClick={() => window.open('https://www.youtube.com/watch?v=9NCZIb1qXjs&t=2s', '_blank')}
+              >
+                <div className="w-full lg:w-1/2">
+                  <img
+                    src="/Neo.png"
+                    alt="Neo Project"
+                    className="w-full h-48 lg:h-full object-cover"
+                  />
+                </div>
+                <div className="w-full lg:w-1/2 p-6 flex flex-col justify-center">
+                  <h3 className="text-3xl font-bold text-white mb-4">Neo</h3>
+                  <p className="text-white text-base leading-relaxed mb-6">
+                    Neo is a dynamic calendar app that adjusts your daily plans as your day unfolds. Unlike rigid planners, Neo is a flexible personal assistant that learns and adapts to help you actually boost productivity.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#3CBCC3' }}>personal project</span>
+                    <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#D05A27' }}>AI</span>
+                    <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#A33C21' }}>multi-agent</span>
+                    <span className="px-3 py-1 text-white text-xs rounded-full" style={{ backgroundColor: '#E6B479' }}>voice assistant</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Lift Project */}
               <div
                 className="overflow-hidden hover:scale-105 transition-transform duration-300 cursor-pointer backdrop-blur-sm flex flex-col lg:flex-row h-auto lg:h-80"
