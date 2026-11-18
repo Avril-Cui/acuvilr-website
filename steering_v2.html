@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Context Pucks Steering</title>
+<style>
+  :root {
+    --ink: #151515; --mute: #6b6b6b; --rule: #d9d9dc; --paper: #ffffff;
+    --accent: #f0582a; --teal: #35d6b4; --amber: #f2c062; --screen: #0d0d0e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { width: 1800px; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .page { padding: 40px 44px 48px; }
+  header { display: grid; grid-template-columns: 560px 1fr; gap: 40px; align-items: center; padding-bottom: 26px; border-bottom: 1.5px solid var(--rule); }
+  h1 { font-size: 64px; letter-spacing: -1.5px; margin: 0; line-height: 1; font-weight: 750; }
+  h1 small { display: block; font-size: 26px; letter-spacing: -0.3px; font-weight: 500; color: var(--mute); margin-top: 14px; }
+  .idea { border-left: 1.5px solid var(--rule); padding-left: 36px; font-size: 19px; line-height: 1.5; color: #333; }
+  .idea b { color: var(--ink); }
+  .idea .rule { display: inline-flex; gap: 8px; align-items: center; font: 600 15px "SF Mono", Menlo, monospace; background: #f5f3f0; border-radius: 6px; padding: 5px 10px; margin: 8px 10px 0 0; }
+  .idea .rule i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  h2 { font-size: 34px; font-weight: 700; margin: 28px 0 4px; letter-spacing: -0.5px; }
+  .sub { color: var(--mute); font-size: 17px; margin: 0 0 14px; }
+  .row { display: grid; gap: 0; }
+  .panel { padding: 18px 26px 26px; position: relative; }
+  .panel + .panel { border-left: 1.5px solid var(--rule); }
+  .row + .row { border-top: 1.5px solid var(--rule); }
+  .panel h3 { font-size: 27px; margin: 0; font-weight: 700; letter-spacing: -0.3px; display: flex; align-items: baseline; gap: 12px; }
+  .panel h3 .n { font: 600 14px "SF Mono", Menlo, monospace; color: #fff; background: var(--accent); border-radius: 50%; width: 26px; height: 26px; display: inline-grid; place-items: center; transform: translateY(-3px); }
+  .panel h3 .tag { font: 500 14px "SF Mono", Menlo, monospace; color: var(--mute); }
+  .panel p { margin: 6px 0 0; font-size: 16px; color: #444; line-height: 1.45; }
+  .panel p b { color: var(--ink); }
+  svg { display: block; }
+  .mono { font-family: "SF Mono", Menlo, monospace; }
+  footer { margin-top: 18px; padding-top: 16px; border-top: 1.5px solid var(--rule); color: var(--mute); font-size: 15px; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Context Pucks<small>v2 · tuning with five knobs</small></h1>
+    <div class="idea">
+      The app already shows each idea as a <b>ring of 3–5 concepts</b> around its puck. On the v2 puck that ring becomes
+      physical: <b>each concept takes a knob</b>, in ring order from the pointer. Distance from the puck means semantic
+      distance, so pull a knob <b>out</b> to go deeper into its concept, push it <b>in</b> to drop it, and pull a
+      <b>spare</b> knob to grow a new one, or <b>flip</b> a knob white side up to rule its concept out of a merge.
+      The ring's marks thicken clockwise, so the side of A facing B shows how much of B a mix takes.<br>
+      <span class="rule"><i></i>knob → one of the idea's concepts</span>
+      <span class="rule"><i></i>out → deeper (1–4) · in → drop</span>
+      <span class="rule"><i></i>knob flipped → ruled out of merges</span>
+      <span class="rule"><i></i>thick side toward B → more B</span>
+    </div>
+  </header>
+
+  <h2>The v2 puck</h2>
+  <p class="sub">Same 60 × 18 mm puck and markers as v1. The ring and the five knobs are new.</p>
+  <div class="row" style="grid-template-columns: 720px 1fr 1fr;" id="row-anatomy"></div>
+
+  <h2>Tuning a context</h2>
+  <p class="sub">Puck A holds <b>mit ai student</b>: mit junior, artificial intelligence, computer science, course six four, and one spare knob. Puck B holds <b>plan final semester to graduate early</b>.</p>
+  <div class="row" style="grid-template-columns: 1fr 1fr 1fr;" id="row-steer-1"></div>
+  <div class="row" style="grid-template-columns: 1fr 1fr 1fr;" id="row-steer-2"></div>
+
+  <h2>Turning, graded</h2>
+  <p class="sub">The heading ring is now graded: its marks grow thicker clockwise, so the face shows which way is <b>more</b>.</p>
+  <div class="row" style="grid-template-columns: 1fr 1fr 1fr;" id="row-turn"></div>
+
+  <footer><span>Context Pucks · storyboard for the v2 puck (assets/v2_puck) · not built yet</span><span>orange = what you do / the active concept · white = concepts · teal = what a merge agrees on</span></footer>
+</div>
+
+<script>
+// ------------------------------------------------------------------ helpers
+const ACC = "#f0582a", TEAL = "#35d6b4", AMBER = "#f2c062";
+const R = 30, HH = 9, K = 0.42, V = 0.9;              // puck mm, foreshortening
+const MARK = { 43: 0x38b2, 44: 0x24e8 };
+// the five knobs, 72° apart (puck frame, pointer = 90°). The idea's concepts take them in ring order; extras are spare.
+const SLOTS = [270, 342, 54, 126, 198];
+const TAPER = j => 2 + j;                            // the ring mark j steps clockwise from the pointer: half-width in degrees
+const PITCH = 2.4;                                    // mm per click
+/** knob list for puck(): st {slot: clicks} (-1 = pushed in, 0 = home, 1–4 = out), hi = slots ringed in orange */
+const knobs = (st = {}, hi = [], fl = []) => SLOTS.map((e, i) => { const v = st[i] ?? 0; return { e, len: v < 0 ? -5 : v * PITCH, hi: hi.includes(i), flip: fl.includes(i) }; });
+const f = n => +n.toFixed(2);
+const el = (tag, attrs, inner = "") => `<${tag} ${Object.entries(attrs).map(([k, v]) => `${k}="${v}"`).join(" ")}>${inner}</${tag}>`;
+
+function proj(cx, cy, s, hdg = 0) {
+  const c = Math.cos(hdg * Math.PI / 180), sn = Math.sin(hdg * Math.PI / 180);
+  return (x, y, z) => { const X = x * c - y * sn, Y = x * sn + y * c; return [f(cx + X * s), f(cy - Y * s * K - z * s * V), Y]; };
+}
+const poly = (pts, attrs) => el("polygon", { points: pts.map(p => p[0] + "," + p[1]).join(" "), ...attrs });
+const pathOf = pts => "M" + pts.map(p => p[0] + " " + p[1]).join(" L");
+
+function grid(id) {
+  const code = MARK[id], g = [];
+  for (let r = 0; r < 6; r++) { g.push([]); for (let c = 0; c < 6; c++) {
+    const border = r === 0 || r === 5 || c === 0 || c === 5;
+    g[r].push(border ? 1 : 1 - ((code >> (15 - ((r - 1) * 4 + (c - 1)))) & 1));
+  } }
+  return g;
+}
+
+// a branch: exit angle e (puck frame, pointer = 90°), pulled len mm, swung by sw degrees
+function knobPos(e, len, sw) {
+  const ex = R * Math.cos(e * Math.PI / 180), ey = R * Math.sin(e * Math.PI / 180);
+  const d = (e + sw) * Math.PI / 180, L = len + 5;
+  return { ex, ey, kx: ex + Math.cos(d) * L, ky: ey + Math.sin(d) * L };
+}
+
+/** The physical puck, isometric. opts: s, hdg, id, tone, branches [{e, len, sw, hi}], fans, detail, label, ghost */
+function puck(cx, cy, o = {}) {
+  const s = o.s ?? 2.6, P = proj(cx, cy, s, o.hdg ?? 0), id = o.id ?? 43;
+  const tone = o.tone ?? "a";
+  const tint = { a: "#cfeee4", b: "#f1d9ae", dark: "#3c3c3e" }[tone];
+  const top = tone === "dark" ? "#4a4a4c" : "#fbfaf7";
+  const gid = "g" + Math.random().toString(36).slice(2, 8);
+  let back = "", front = "", out = "";
+  out += `<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${top}"/><stop offset="0.55" stop-color="${tone === "dark" ? "#38383a" : "#eeece6"}"/><stop offset="1" stop-color="${tint}"/></linearGradient>
+    <linearGradient id="${gid}k" x1="0" x2="1"><stop offset="0" stop-color="#d9d7d1"/><stop offset=".4" stop-color="#fff"/><stop offset="1" stop-color="#cfcdc7"/></linearGradient></defs>`;
+
+  // branches
+  for (const b of (o.branches ?? [])) {
+    const { ex, ey, kx, ky } = knobPos(b.e, b.len, b.sw ?? 0);
+    const a = P(ex * 0.93, ey * 0.93, 0), k = P(kx, ky, 0), w = 5 * s;
+    let g = "";
+    g += el("line", { x1: a[0], y1: a[1], x2: k[0], y2: k[1], stroke: "#555", "stroke-width": f(w * 0.75 + 2.4), "stroke-linecap": "round" });
+    g += el("line", { x1: a[0], y1: a[1], x2: k[0], y2: k[1], stroke: "#fdfcf9", "stroke-width": f(w * 0.75), "stroke-linecap": "round" });
+    const kt = P(kx, ky, 4.5), kb = P(kx, ky, -1.5), rx = 4 * s, ry = 4 * s * K;
+    g += `<path d="M${kt[0] - rx} ${kt[1]} L${kb[0] - rx} ${kb[1]} A${rx} ${ry} 0 0 0 ${kb[0] + rx} ${kb[1]} L${kt[0] + rx} ${kt[1]} Z" fill="url(#${gid}k)" stroke="#555" stroke-width="1.2"/>`;
+    g += el("ellipse", { cx: kt[0], cy: kt[1], rx, ry, fill: "#141414", stroke: b.hi ? ACC : "#141414", "stroke-width": b.hi ? 2.5 : 1 });
+    if (b.flip) g += el("ellipse", { cx: kt[0], cy: kt[1], rx: f(rx * 0.6), ry: f(ry * 0.6), fill: "#fbfaf7" });   // white side up: a black ring
+    if (b.label) g += el("text", { x: f(k[0] + (b.lx ?? 0)), y: f(kt[1] - 12 + (b.ly ?? 0)), "text-anchor": "middle", "font-size": 13, "font-weight": 600, fill: "#333" }, b.label);
+    (k[2] > 0 ? (back += g) : (front += g));
+  }
+
+  // body side
+  const L0 = P(-R, 0, HH), L1 = P(-R, 0, -HH), R1 = P(R, 0, -HH), R0 = P(R, 0, HH), rx = R * s, ry = R * s * K;
+  let body = `<path d="M${L0[0]} ${L0[1]} L${L1[0]} ${L1[1]} A${rx} ${ry} 0 0 0 ${R1[0]} ${R1[1]} L${R0[0]} ${R0[1]} A${rx} ${ry} 0 0 1 ${L0[0]} ${L0[1]} Z" fill="url(#${gid})" stroke="${tone === "dark" ? "#222" : "#8d8d8d"}" stroke-width="1.3"/>`;
+  // flutes on the visible side
+  for (let k = 0; k < 12; k++) {
+    const a = (15 + 30 * k) * Math.PI / 180, x = (R - 0.3) * Math.cos(a), y = (R - 0.3) * Math.sin(a);
+    const p0 = P(x, y, 5.5), p1 = P(x, y, -5.5);
+    if (p0[2] < -2) body += el("line", { x1: p0[0], y1: p0[1], x2: p1[0], y2: p1[1], stroke: "#000", "stroke-opacity": 0.16, "stroke-width": 2.2, "stroke-linecap": "round" });
+  }
+  // the slots the knobs slide out of
+  for (const b of (o.branches ?? [])) {
+    const pts = [], pts2 = [];
+    for (let d = -5; d <= 5; d += 2.5) {
+      const a = (b.e + d) * Math.PI / 180, x = R * Math.cos(a), y = R * Math.sin(a);
+      pts.push(P(x, y, 1.8)); pts2.unshift(P(x, y, -1.8));
+    }
+    if (pts.every(p => p[2] < 0)) body += poly(pts.concat(pts2), { fill: "#2a2a2a", opacity: 0.8 });
+  }
+  // top face
+  const T = P(0, 0, HH);
+  body += el("ellipse", { cx: T[0], cy: T[1], rx, ry, fill: top, stroke: tone === "dark" ? "#222" : "#8d8d8d", "stroke-width": 1.3 });
+  if (o.detail !== false) {
+    for (let j = 0; j < 12; j++) {
+      const c = 90 - 30 * j, h = TAPER(j), pts = [];
+      for (let i = 0; i <= 6; i++) { const a = (c - h + 2 * h * i / 6) * Math.PI / 180; pts.push(P(26.2 * Math.cos(a), 26.2 * Math.sin(a), HH)); }
+      for (let i = 6; i >= 0; i--) { const a = (c - h + 2 * h * i / 6) * Math.PI / 180; pts.push(P(22 * Math.cos(a), 22 * Math.sin(a), HH)); }
+      body += poly(pts, { fill: "#161616" });
+    }
+    const g = grid(id), cell = 24.3 / 6;
+    for (let r = 0; r < 6; r++) for (let c = 0; c < 6; c++) if (g[r][c]) {
+      const x0 = -12.15 + c * cell, y1 = 12.15 - r * cell;
+      body += poly([P(x0, y1, HH), P(x0 + cell + .05, y1, HH), P(x0 + cell + .05, y1 - cell - .05, HH), P(x0, y1 - cell - .05, HH)], { fill: "#161616" });
+    }
+  }
+  const p0 = P(0, o.detail === false ? 4 : 17, HH), p1 = P(0, o.detail === false ? 24 : 22.4, HH);
+  body += el("line", { x1: p0[0], y1: p0[1], x2: p1[0], y2: p1[1], stroke: tone === "dark" ? "#eee" : "#161616", "stroke-width": f(2 * s * 0.8), "stroke-linecap": o.detail === false ? "round" : "butt" });
+  if (o.label) { const L = P(0, -R, -HH); out += ""; body += el("text", { x: L[0], y: f(L[1] - 10), "text-anchor": "middle", "font-size": 19, "font-weight": 700, fill: tone === "dark" ? "#eee" : "#111" }, o.label); }
+  return `<g ${o.ghost ? 'opacity="0.35"' : ""}>${out}${back}${body}${front}</g>`;
+}
+
+const arrow = (x1, y1, x2, y2, curve = 0, w = 3) => {
+  const mx = (x1 + x2) / 2 - (y2 - y1) * curve, my = (y1 + y2) / 2 + (x2 - x1) * curve;
+  const a = Math.atan2(y2 - my, x2 - mx), h = 11;
+  return `<path d="M${x1} ${y1} Q${f(mx)} ${f(my)} ${x2} ${y2}" fill="none" stroke="${ACC}" stroke-width="${w}" stroke-linecap="round"/>
+    <path d="M${f(x2 - h * Math.cos(a - 0.45))} ${f(y2 - h * Math.sin(a - 0.45))} L${x2} ${y2} L${f(x2 - h * Math.cos(a + 0.45))} ${f(y2 - h * Math.sin(a + 0.45))}" fill="none" stroke="${ACC}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+};
+const note = (x, y, t, anchor = "start", size = 14, col = "#555") => el("text", { x, y, "text-anchor": anchor, "font-size": size, fill: col, "font-family": "SF Mono, Menlo, monospace" }, t);
+const callout = (x1, y1, x2, y2, t, anchor = "start") =>
+  `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#999" stroke-width="1.2"/><circle cx="${x1}" cy="${y1}" r="3" fill="${ACC}"/>` +
+  el("text", { x: x2 + (anchor === "start" ? 6 : -6), y: y2 + 5, "text-anchor": anchor, "font-size": 15, "font-weight": 600, fill: "#222" }, t);
+
+// ------------------------------------------------------------------ the screen (twin)
+function screen(w, h, inner) {
+  let g = "";
+  for (let x = 30; x < w; x += 36) g += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="#fff" stroke-opacity=".035"/>`;
+  for (let y = 30; y < h; y += 36) g += `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="#fff" stroke-opacity=".035"/>`;
+  return `<rect width="${w}" height="${h}" rx="12" fill="#0d0d0e"/>${g}${inner}`;
+}
+function twin(cx, cy, r = 34, tone = "a", label) {
+  const top = tone === "b" ? "#5a5a5c" : "#f2f1ee", side = tone === "b" ? "#2c2c2e" : "#b8b7b3", h = r * 0.48;
+  return `<path d="M${cx - r} ${cy} v${h} a${r} ${r * K} 0 0 0 ${2 * r} 0 v${-h} Z" fill="${side}"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${f(r * K)}" fill="${top}"/>
+    <line x1="${cx - r * 0.42}" y1="${f(cy + r * 0.12)}" x2="${cx - r * 0.02}" y2="${f(cy - r * 0.06)}" stroke="${tone === "b" ? "#ddd" : "#151515"}" stroke-width="3" stroke-linecap="round"/>
+    ${label ? el("text", { x: cx, y: f(cy + h + r * K + 24), "text-anchor": "middle", "font-size": 17, "font-weight": 650, fill: "#f2f2f2" }, label) : ""}`;
+}
+const node = (x, y, t, col = TEAL, anchor = "start", dx = 10, dy = 5, size = 14) =>
+  `<circle cx="${x}" cy="${y}" r="5" fill="${col}"/><circle cx="${x}" cy="${y}" r="9" fill="${col}" opacity=".18"/>` +
+  (t ? el("text", { x: x + (anchor === "start" ? dx : anchor === "end" ? -dx : 0), y: y + dy, "text-anchor": anchor, "font-size": size, fill: "#e9e9e9", "font-weight": 500 }, t) : "");
+const wire = (x1, y1, x2, y2, col = TEAL, w = 1.5, dash) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}" ${dash ? `stroke-dasharray="${dash}"` : ""}/>`;
+const tagBox = (x, y, t, fill = ACC, col = "#111") => {
+  const w = t.length * 8.6 + 16;
+  return `<rect x="${f(x - w / 2)}" y="${y - 13}" width="${f(w)}" height="22" fill="${fill}"/>` + el("text", { x, y: y + 3, "text-anchor": "middle", "font-size": 13.5, "font-family": "SF Mono, Menlo, monospace", fill: col }, t);
+};
+
+/** The steering arc (after the reference): fan of dimensions around (cx, cy), radial levels, an active direction. */
+function steerArc(cx, cy, r, a0, a1, o = {}) {
+  const pt = (a, rr) => [f(cx + rr * Math.cos(a * Math.PI / 180)), f(cy - rr * Math.sin(a * Math.PI / 180))];
+  const arc = (rr, b0, b1) => { const p = pt(b0, rr), q = pt(b1, rr); return `M${p[0]} ${p[1]} A${rr} ${rr} 0 0 ${b1 > b0 ? 0 : 1} ${q[0]} ${q[1]}`; };
+  let g = "";
+  for (const [lv, lab] of [[0.25, "1"], [0.5, "2"], [0.75, "3"], [1, ""]]) {
+    g += `<path d="${arc(r * lv, a0, a1)}" fill="none" stroke="#fff" stroke-opacity="${lv === 1 ? 0.75 : 0.2}" stroke-width="${lv === 1 ? 1.6 : 1}" ${lv < 1 ? 'stroke-dasharray="3 5"' : ""}/>`;
+    if (lab && o.levels !== false) { const p = pt(a1 + 3, r * lv); g += note(p[0], p[1] + 4, lab, "middle", 11, "#777"); }
+  }
+  const n = (o.dims ?? DIMS).length;
+  (o.dims ?? DIMS).forEach((d, i) => {
+    const a = a0 + (a1 - a0) * i / (n - 1), p = pt(a, r), q = pt(a, r + 9), t = pt(a, r + 24);
+    g += `<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="#fff" stroke-opacity=".8" stroke-width="1.6"/>`;
+    const on = (o.active ?? []).includes(i);
+    g += on ? tagBox(t[0], t[1] + 2, d.toLowerCase()) : note(t[0], t[1] + 5, d.toLowerCase(), "middle", 13, "#aaa");
+  });
+  if (o.seg) g += `<path d="${arc(r, o.seg[0], o.seg[1])}" fill="none" stroke="${ACC}" stroke-width="5" stroke-linecap="round"/>`;
+  for (const v of (o.vectors ?? [])) {
+    const p = pt(v.a, r * v.l);
+    g += wire(cx, cy, p[0], p[1], v.col ?? ACC, v.w ?? 2.4) + `<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="${v.col ?? ACC}"/>`;
+  }
+  return g;
+}
+
+// ------------------------------------------------------------------ the idea on the screen, in the app's style
+const FL = 0.62;   // how flat the concept ring lies on the screen's mat
+const conceptLabel = (x, y, t, a, o = {}) => {
+  const s = Math.sin(a), c = Math.cos(a), pos = o.pos ?? (s > 0.5 ? "above" : s < -0.5 ? "below" : c > 0 ? "right" : "left");
+  const [dx, dy, anchor] = { above: [0, -13, "middle"], below: [0, 22, "middle"], below2: [-10, 42, "middle"], right: [11, 5, "start"], left: [-11, 5, "end"] }[pos];
+  return el("text", { x: f(x + dx), y: f(y + dy), "text-anchor": anchor, "font-size": o.size ?? 12.5, "font-family": "SF Mono, Menlo, monospace",
+    fill: o.col ?? "#a8a8a8", ...(o.strike ? { "text-decoration": "line-through" } : {}), ...(o.bold ? { "font-weight": 700 } : {}) }, t);
+};
+const dot = (x, y, col = "#eaeaea", r = 5.5) => `<circle cx="${x}" cy="${y}" r="${r + 4}" fill="${col}" opacity=".14"/><circle cx="${x}" cy="${y}" r="${r}" fill="${col}"/>`;
+
+/** An idea's twin and its concept ring. Each slot is a knob: {t, st: n | act | drop | spare | new | kept, chain: [...], pick, pos, cpos: [...]} */
+function ideaRing(cx, cy, r, o = {}) {
+  const tw = o.tw ?? 22, step = o.step ?? 74;
+  const pt = (e, rr) => { const a = e * Math.PI / 180; return [f(cx + rr * Math.cos(a)), f(cy - rr * Math.sin(a) * FL)]; };
+  let back = "", g = "";
+  (o.slots ?? []).forEach((sl, i) => {
+    if (!sl) return;
+    const e = SLOTS[i], a = e * Math.PI / 180, p = pt(e, r);
+    const lo = { pos: sl.pos ?? ["below", "right", "right", "above", "left"][i] };
+    if (sl.st === "spare") { back += `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="none" stroke="#666" stroke-dasharray="2 2"/>`; if (sl.t !== "") back += conceptLabel(p[0], p[1], sl.t ?? "spare", a, { ...lo, col: "#5d5d5d", size: 11.5 }); }
+    else if (sl.st === "drop") { g += `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="none" stroke="#777" stroke-width="1.4"/>` + conceptLabel(p[0], p[1], sl.t, a, { ...lo, col: "#6a6a6a", strike: true }); }
+    else if (sl.st !== "new") { const on = sl.st === "act" || sl.st === "kept"; back += wire(cx, cy, p[0], p[1], on ? ACC : "#fff", on ? 1.6 : 0.8) .replace("/>", ` stroke-opacity="${on ? 0.8 : 0.18}"/>`); g += dot(p[0], p[1], on && !sl.chain ? ACC : "#eaeaea") + (sl.chain ? "" : conceptLabel(p[0], p[1], sl.t, a, { ...lo, col: sl.st === "kept" ? "#fff" : on ? "#e8e8e8" : "#a8a8a8", bold: sl.st === "kept" })); }
+    if (sl.chain) {
+      if (sl.st === "new") back += `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="none" stroke="#666" stroke-dasharray="2 2"/>`;
+      let prev = p;
+      sl.chain.forEach((t, j) => {
+        const q = pt(e, r + (j + 1) * step), last = j === (sl.pick ?? sl.chain.length - 1), faint = sl.pick !== undefined && !last;
+        g += wire(prev[0], prev[1], q[0], q[1], last ? ACC : "#fff", last ? 2 : 1, faint ? "3 4" : "").replace("/>", ` stroke-opacity="${last ? 1 : 0.45}"/>`);
+        g += dot(q[0], q[1], last ? ACC : faint ? "#777" : "#eaeaea") + conceptLabel(q[0], q[1], t, a, { pos: (sl.cpos ?? [])[j] ?? (j % 2 ? "below" : "above"), col: last ? "#fff" : faint ? "#777" : "#bdbdbd" });
+        prev = q;
+      });
+    }
+  });
+  return back + twin(cx, cy - tw * 0.3, tw, o.tone ?? "a") + g;
+}
+const scrTitle = (t, sub) => el("text", { x: 20, y: 30, "font-size": 14, "font-weight": 700, fill: "#fff", "font-family": "SF Mono, Menlo, monospace" }, t) + (sub ? note(20, 50, sub, "start", 12, "#888") : "");
+
+// ------------------------------------------------------------------ the puck from above (what the webcam sees)
+function topView(cx, cy, sc, o = {}) {
+  const st = o.st ?? {}, dark = o.tone === "b";
+  const hr = (o.hdg ?? 0) * Math.PI / 180, rot = (x, y) => [f(cx + (x * Math.cos(hr) - y * Math.sin(hr)) * sc), f(cy - (x * Math.sin(hr) + y * Math.cos(hr)) * sc)];
+  let g = "", over = "";
+  SLOTS.forEach((e, i) => {
+    const v = st[i] ?? 0, len = v < 0 ? -5 : v * PITCH, kp = knobPos(e, len, 0), a = rot(0.27 * kp.ex, 0.27 * kp.ey), b = rot(kp.kx, kp.ky);
+    if (o.channels) {
+      const c1 = rot(kp.ex, kp.ey);
+      over += `<line x1="${a[0]}" y1="${a[1]}" x2="${c1[0]}" y2="${c1[1]}" stroke="#bbb" stroke-width="${f(6 * sc)}" stroke-opacity=".35" stroke-linecap="round"/>`;
+      for (let j = -1; j <= 4; j++) { const q = knobPos(e, j < 0 ? -5 : j * PITCH, 0), d = rot(q.kx, q.ky);
+        over += j < 0 ? `<circle cx="${d[0]}" cy="${d[1]}" r="2.6" fill="none" stroke="#888"/>` : `<circle cx="${d[0]}" cy="${d[1]}" r="${j ? 2.6 : 2}" fill="${v > 0 && j <= v && j > 0 ? ACC : "#9a9a9a"}"/>`; }
+    }
+    g += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#555" stroke-width="${f(3.75 * sc + 2)}" stroke-linecap="round"/><line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#fdfcf9" stroke-width="${f(3.75 * sc)}" stroke-linecap="round"/>`;
+    over += `<circle cx="${b[0]}" cy="${b[1]}" r="${f(4 * sc)}" fill="#141414" stroke="${(o.hi ?? []).includes(i) ? ACC : "#141414"}" stroke-width="2.2"/>`;
+    if ((o.flip ?? []).includes(i)) over += `<circle cx="${b[0]}" cy="${b[1]}" r="${f(2.4 * sc)}" fill="#fbfaf7"/>`;
+    if (o.labels?.[i]) { const ca = Math.cos((e + (o.hdg ?? 0)) * Math.PI / 180), sa = Math.sin(e * Math.PI / 180), t = rot(kp.kx + ca * 15, kp.ky + sa * 11);
+      over += note(t[0], f(t[1] + 4), o.labels[i], Math.abs(ca) < 0.4 ? "middle" : ca > 0 ? "start" : "end", 12.5, (o.hi ?? []).includes(i) ? ACC : "#555"); }
+  });
+  g += `<circle cx="${cx}" cy="${cy}" r="${R * sc}" fill="${dark ? "#f1d9ae" : "#fbfaf7"}" stroke="#8d8d8d" stroke-width="1.3"/>`;
+  if (o.channels) g += `<g opacity=".5">`;
+  for (let j = 0; j < 12; j++) {
+    const c = 90 - 30 * j, h = TAPER(j), pts = [];
+    for (let i = 0; i <= 6; i++) { const a = (c - h + 2 * h * i / 6) * Math.PI / 180; pts.push(rot(26.2 * Math.cos(a), 26.2 * Math.sin(a))); }
+    for (let i = 6; i >= 0; i--) { const a = (c - h + 2 * h * i / 6) * Math.PI / 180; pts.push(rot(22 * Math.cos(a), 22 * Math.sin(a))); }
+    g += poly(pts, { fill: "#161616" });
+  }
+  if (o.signs !== false) for (const [a, t] of [[72, "−"], [108, "+"]]) { const q = rot(28.1 * Math.cos(a * Math.PI / 180), 28.1 * Math.sin(a * Math.PI / 180));
+    g += el("text", { x: q[0], y: f(q[1] + sc * 1.4), "text-anchor": "middle", "font-size": f(sc * 4.2), "font-weight": 800, fill: "#161616" }, t); }
+  const gr = grid(o.id ?? 43), cell = 24.3 / 6;
+  for (let r = 0; r < 6; r++) for (let c = 0; c < 6; c++) if (gr[r][c]) {
+    const x0 = -12.15 + c * cell, y1 = 12.15 - r * cell;
+    g += poly([rot(x0, y1), rot(x0 + cell + .05, y1), rot(x0 + cell + .05, y1 - cell - .05), rot(x0, y1 - cell - .05)], { fill: "#161616" });
+  }
+  const p0 = rot(0, 17), p1 = rot(0, 22.4);
+  g += `<line x1="${p0[0]}" y1="${p0[1]}" x2="${p1[0]}" y2="${p1[1]}" stroke="#161616" stroke-width="${f(2 * sc)}"/>`;
+  if (o.channels) g += `</g>`;
+  return g + over;
+}
+
+// ------------------------------------------------------------------ arrows on the physical puck (no hands)
+const along = (P, e, L, z = 2) => { const a = e * Math.PI / 180; return P((R + L) * Math.cos(a), (R + L) * Math.sin(a), z); };
+/** an arrow beside a knob's ray, from L0 to L1 mm beyond the rim; side = which side of the rod, in px */
+function rayArrow(P, e, L0, L1, side = 22) {
+  const p = along(P, e, L0), q = along(P, e, L1), d = Math.hypot(q[0] - p[0], q[1] - p[1]), nx = -(q[1] - p[1]) / d * side, ny = (q[0] - p[0]) / d * side;
+  return arrow(f(p[0] + nx), f(p[1] + ny), f(q[0] + nx), f(q[1] + ny));
+}
+const pressArrow = (P, e, L) => { const k = along(P, e, L + 5, 4.5); return arrow(k[0], k[1] - 58, k[0], k[1] - 14); };
+const knobAt = (P, e, v) => along(P, e, (v < 0 ? -5 : v * PITCH) + 5, 4.5);
+
+// ------------------------------------------------------------------ panels
+const panel = (n, title, tag, desc, svgW, svgH, inner) =>
+  `<div class="panel"><h3>${n ? `<span class="n">${n}</span>` : ""}${title}${tag ? `<span class="tag">${tag}</span>` : ""}</h3><p>${desc}</p>
+   <svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">${inner}</svg></div>`;
+const W3 = 522;
+const scr = (s) => `<g transform="translate(0 250)">${screen(W3 - 52, 215, s)}</g>`;
+
+// puck A: "mit ai student". Its concepts take the knobs in ring order from the pointer; slot 4 is spare.
+const A = ["mit junior", "artificial intelligence", "computer science", "course six four", null];
+const ringA = (over = {}) => A.map((t, i) => over[i] ?? (t ? { t, st: "n" } : { st: "spare" }));
+
+// ---- the v2 puck row
+const anatomy = (() => {
+  const cx = 300, cy = 240, s = 4.6, P = proj(cx, cy, s);
+  let g = puck(cx, cy, { s, branches: knobs({ 0: -1, 1: 3 }, [1], [4]) });
+  const ring = P(-24, 4, HH), ptr = P(0, 19.5, HH), mark = P(6, 2, HH), flute = P(R * Math.cos(-150 * Math.PI / 180), R * Math.sin(-150 * Math.PI / 180), 3);
+  const k1 = knobAt(P, 342, 3), k0 = knobAt(P, 270, -1), k4 = knobAt(P, 198, 0), k2 = knobAt(P, 54, 0);
+  g += callout(ptr[0], ptr[1], 330, 30, "Pointer = heading 0, and where the ring starts");
+  g += callout(ring[0], ring[1], 10, 60, "Graded ring: marks thicken clockwise");
+  g += callout(mark[0], mark[1], 500, 100, "ArUco 43 (53 below)");
+  g += callout(k2[0], k2[1], 500, 150, "a concept's knob, home");
+  g += callout(k1[0] + 10, k1[1] + 2, 470, 400, "out 3 clicks: 3 steps deeper");
+  g += callout(k0[0], k0[1] + 6, 330, 470, "pushed in: concept dropped");
+  g += callout(k4[0] - 6, k4[1], 10, 330, "flipped: white side up = ruled out");
+  g += callout(flute[0], flute[1], 10, 430, "12 flutes: feel 30° steps");
+  return panel("", "Anatomy", "60 × 18 mm · 2 halves · 5 knobs", "Five knobs, 72° apart. Each slides <b>in</b> one click or <b>out</b> up to four, and <b>flips</b> half a turn. The knobs carry no words: the screen names them.", 680, 490, g);
+})();
+
+const mechanism = (() => {
+  let g = topView(230, 228, 3.6, { st: { 0: -1, 1: 3 }, hi: [1], flip: [3], channels: true, signs: false, labels: ["dropped", "deeper ×3", "home", "flipped", "spare"] });
+  g += note(18, 30, "top view, half the puck lifted off", "start", 13, "#777");
+  g += note(18, 470, "each slider: ○ in · home · 1–4 out (2.4 mm clicks)", "start", 13, "#777");
+  g += note(18, 490, "knob spins on a round pin: 2 detents, 0° / 180°", "start", 13, "#777");
+  return panel("", "Mechanism", "5 sliders · 6 positions · 2 faces", "Each knob is a slider with detents; <b>home</b> sits one click out, so it can also be <b>pushed in</b>. The knob spins on the slider's tip: <b>solid black</b> up = in play, <b>black ring</b> up = flipped.", 480, 500, g);
+})();
+
+const overview = (() => {
+  const w = 470, h = 420;
+  let g = scrTitle("mit ai student", "artificial intelligence, 3 deep · mit junior, dropped");
+  g += `<g transform="translate(0 30)">` + ideaRing(150, 200, 80, { tw: 30, slots: ringA({ 0: { t: "mit junior", st: "drop" }, 1: { t: "artificial intelligence", st: "act", pos: "below", chain: ["machine learning", "deep learning", "llm agents"], cpos: ["below", "above", "below"] } }), step: 68 }) + `</g>`;
+  g += note(20, 400, "each concept sits at its knob's bearing, turning with the puck", "start", 12, "#888");
+  return panel("", "On the screen", "the ring you already have", "The app already draws an idea as a <b>ring of 3–5 concepts</b> around its twin, turning with the puck. v2 snaps that ring to the knobs: <b>concept i = knob i</b>.", w, h + 30, `<g transform="translate(0 10)">${screen(w, h, g)}</g>`);
+})();
+
+// ---- tuning rows
+const deeperPanel = (() => {
+  const hdg = -30, P = proj(150, 120, 2.3, hdg);
+  let g = puck(150, 120, { s: 2.3, hdg, branches: knobs({ 1: 3 }, [1]) });
+  g += rayArrow(P, 342, 4, 3 * PITCH + 16, 24);
+  g += note(20, 236, "pull out · 3 clicks", "start", 13, "#666");
+  let s = scrTitle("mit ai student", "artificial intelligence, 3 deep");
+  s += ideaRing(140, 124, 50, { tw: 18, step: 80, slots: ringA({ 1: { t: "artificial intelligence", st: "act", chain: ["machine learning", "deep learning", "llm agents"], cpos: ["below", "above", "below"] } }) });
+  return panel(1, "Go deeper", "out = further down a concept", "Pull a concept's knob <b>out</b>. Each click steps further into <b>that</b> concept, so its branch grows away from the puck. This is v1's expand and pull, aimed at one concept.", W3, 470, g + scr(s));
+})();
+
+const dropPanel = (() => {
+  const hdg = 40, P = proj(150, 120, 2.3, hdg);
+  let g = puck(150, 120, { s: 2.3, hdg, branches: knobs({ 0: -1 }, [0]) });
+  g += rayArrow(P, 270, 22, 7, 0);
+  g += note(20, 236, "push in · flush with the rim", "start", 13, "#666");
+  let s = scrTitle("ai student", "mit junior, dropped");
+  s += ideaRing(150, 128, 66, { tw: 20, slots: ringA({ 0: { t: "mit junior", st: "drop" }, 1: { t: "artificial intelligence", st: "n", pos: "below" } }) });
+  s += note(318, 150, "merge, mix and send", "start", 12, "#888") + note(318, 168, "all read the idea", "start", 12, "#888") + note(318, 186, "without it", "start", 12, "#888");
+  return panel(2, "Drop", "in = leave it out", "Push a knob <b>in</b> and its concept stays on the ring but greyed: the idea is read <b>without it</b> until you pull the knob home.", W3, 470, g + scr(s));
+})();
+
+const growPanel = (() => {
+  const hdg = 115, P = proj(150, 120, 2.3, hdg);
+  let g = puck(150, 120, { s: 2.3, hdg, branches: knobs({ 4: 2 }, [4]) });
+  g += rayArrow(P, 198, 4, 2 * PITCH + 16, 24);
+  g += note(20, 236, "pull the spare knob · 2 clicks", "start", 13, "#666");
+  let s = scrTitle("mit ai student", "a new branch, 2 out");
+  s += ideaRing(340, 104, 50, { tw: 15, step: 84, slots: ringA({ 0: { t: "", st: "n" }, 1: { t: "artificial intelligence", st: "n", pos: "below2" }, 2: { t: "computer science", st: "n", pos: "above" }, 3: { t: "course six four", st: "n", pos: "left" }, 4: { st: "new", chain: ["ai research urop", "ai + policy minor"], cpos: ["above", "below"] } }) });
+  s += note(20, 205, "1 click: a near neighbour · more clicks: further afield", "start", 11.5, "#888");
+  return panel(3, "Grow a branch", "spare knob = a new concept", "An idea with fewer than 5 concepts has <b>spare knobs</b>. Pull one and a new concept grows in that gap; <b>the further out, the further afield</b>.", W3, 470, g + scr(s));
+})();
+
+const keepPanel = (() => {
+  const hdg = -30, P = proj(140, 128, 2.3, hdg);
+  let g = puck(140, 128, { s: 2.3, hdg, branches: knobs({ 1: 3 }, [1]) });
+  g += pressArrow(P, 342, 3 * PITCH);
+  g += note(20, 236, "press the cap", "start", 13, "#666");
+  g += puck(400, 128, { s: 1.5, hdg, branches: knobs({}) });
+  const P2 = proj(400, 128, 1.5, hdg);
+  g += rayArrow(P2, 342, 20, 8, 16);
+  g += note(400, 214, "it springs home", "middle", 13, "#666");
+  let s = scrTitle("mit ai student", "artificial intelligence → llm agents");
+  s += ideaRing(150, 124, 70, { tw: 20, slots: ringA({ 1: { t: "llm agents", st: "kept", pos: "right" } }) });
+  s += note(300, 160, "push home without", "start", 12, "#888") + note(300, 178, "pressing = undo", "start", 12, "#888");
+  return panel(4, "Keep", "press = swap in the deeper concept", "<b>Press the cap</b> and the concept you reached replaces the old one on the ring. The knob returns home, ready to go deeper again.", W3, 470, g + scr(s));
+})();
+
+const mergePanel = (() => {
+  const P = proj(130, 130, 2.0, -30);
+  let g = puck(130, 130, { s: 2.0, hdg: -30, branches: knobs({ 0: -1, 1: 3 }, [1]) });
+  g += puck(330, 130, { s: 2.0, tone: "b", id: 44, label: "B", branches: knobs({}) });
+  g += arrow(400, 70, 360, 92, 0.2) + arrow(64, 70, 104, 92, -0.2);
+  g += note(230, 228, "tuned A meets B: the knobs come along", "middle", 13, "#666");
+  let s = scrTitle("graduate early with ai electives", "merge of A (tuned) and B");
+  s += twin(90, 140, 24, "a") + twin(380, 140, 24, "b");
+  s += dot(150, 108, ACC) + conceptLabel(150, 108, "llm agents", 0, { pos: "above", col: "#fff" });
+  s += dot(320, 108) + conceptLabel(320, 108, "major technical classes", 0, { pos: "above" });
+  s += wire(150, 108, 320, 108, TEAL, 2) + el("text", { x: 235, y: 128, "text-anchor": "middle", "font-size": 13, fill: TEAL, "font-family": "SF Mono, Menlo, monospace" }, "6.4 ai electives");
+  s += conceptLabel(90, 172, "mit junior", 0, { pos: "below", col: "#666", strike: true });
+  return panel(5, "Merge, tuned", "knobs carry into every gesture", "Bring tuned A to B. The merge reads A <b>as tuned</b>: the deeper concept finds its partner and the dropped one stays out.", W3, 470, g + scr(s));
+})();
+
+const flipPanel = (() => {
+  const hdg = 40, P = proj(150, 124, 2.3, hdg);
+  let g = puck(150, 124, { s: 2.3, hdg, branches: knobs({}, [2], [2]) });
+  const k = knobAt(P, 54, 0);
+  g += arrow(f(k[0] - 20), f(k[1] - 22), f(k[0] + 20), f(k[1] - 22), -0.6);
+  g += note(20, 236, "flip the computer science knob: half a turn", "start", 13, "#666");
+  g += topView(410, 110, 1.15, { flip: [2], hi: [2], signs: false }) + note(410, 172, "camera: a ring,", "middle", 12, "#777") + note(410, 188, "not a disc", "middle", 12, "#777");
+  let s = scrTitle("graduate early, light on cs", "merge of A and B · computer science ruled out");
+  s += twin(80, 146, 22, "a") + twin(390, 146, 22, "b");
+  s += `<line x1="128" y1="100" x2="142" y2="114" stroke="${ACC}" stroke-width="2"/><line x1="142" y1="100" x2="128" y2="114" stroke="${ACC}" stroke-width="2"/>` + conceptLabel(135, 107, "computer science", 0, { pos: "above", col: ACC, strike: true });
+  s += dot(330, 104, "#777", 4.5) + conceptLabel(330, 104, "major technical classes", 0, { pos: "above", col: "#666", strike: true });
+  s += dot(150, 156) + dot(320, 156) + wire(150, 156, 320, 156, TEAL, 2) + el("text", { x: 235, y: 148, "text-anchor": "middle", "font-size": 12.5, fill: TEAL, "font-family": "SF Mono, Menlo, monospace" }, "6-4 degree audit");
+  s += note(150, 180, "course six four", "middle", 11.5, "#a8a8a8") + note(320, 180, "graduation reqs", "middle", 11.5, "#a8a8a8");
+  return panel(6, "Flip a knob", "white side up = ruled out", "Flip a knob <b>upside down</b> and its concept is <b>excluded when merging</b>: the merge steers away from it and drops what falls under it on the other side.", W3, 470, g + scr(s));
+})();
+
+// ---- turning row
+const mixPanel = (() => {
+  let g = puck(150, 140, { s: 2.3, hdg: -30, branches: knobs({}) });
+  g += `<path d="M66 196 A92 36 0 0 0 236 196" fill="none" stroke="${ACC}" stroke-width="3"/>` + arrow(226, 202, 240, 192, 0);
+  g += `<path d="M234 84 A92 36 0 0 0 66 84" fill="none" stroke="${ACC}" stroke-width="3" opacity=".35"/>`;
+  g += puck(390, 150, { s: 2.0, tone: "b", id: 44, label: "B", branches: knobs({}) });
+  g += note(150, 240, "turn: click · click · click (30° each)", "middle", 13, "#666");
+  let s = steerArc(235, 192, 120, 170, 10, { dims: ["0", "25", "50", "75", "100"], active: [2], seg: [170, 90], levels: false, vectors: [{ a: 90, l: 1, col: ACC }] });
+  s += twin(235, 192, 24, "a");
+  s += note(18, 28, "A: mit ai student", "start", 12.5, "#999") + note(452, 28, "B: graduate early", "end", 12.5, "#999");
+  return panel(7, "Mix", "turn · 30° clicks, read to < 1°", "Turn A near B and turn its <b>thick side toward B</b> for more of B. The flutes <b>click</b> each 30° step; the ring reads it to under 1°.", W3, 470, g + scr(s));
+})();
+
+const facePanel = (() => {
+  let g = topView(120, 128, 3.2, {});
+  // annotate the graded ring
+  const at = (a, r) => [f(120 + r * 3.2 * Math.cos(a * Math.PI / 180)), f(128 - r * 3.2 * Math.sin(a * Math.PI / 180))];
+  const thin = at(60, 26.5), thick = at(150, 24);
+  const a0 = at(140, 34), a1 = at(40, 34), a2 = at(46, 34);
+  g += `<path d="M${a0[0]} ${a0[1]} A${34 * 3.2} ${34 * 3.2} 0 0 1 ${a1[0]} ${a1[1]}" fill="none" stroke="${ACC}" stroke-width="2.5"/>` + arrow(a2[0], a2[1], a1[0], a1[1], 0, 2.5);
+  g += callout(thin[0], thin[1], 250, 40, "thin: a little B");
+  g += callout(thick[0], thick[1], 4, 262, "thick: mostly B");
+  g += note(250, 120, "clockwise = more", "start", 13, ACC) + note(250, 138, "− and + sit either", "start", 12, "#777") + note(250, 154, "side of the pointer", "start", 12, "#777");
+  // the side facing B is the amount
+  [[0.25, 70], [0.5, 235], [0.75, 400]].forEach(([sh, x]) => {
+    const hdg = sh * 360 - 90;
+    g += topView(x, 340, 1.05, { hdg, signs: false }) + `<circle cx="${x + 70}" cy="340" r="16" fill="#f1d9ae" stroke="#8d8d8d"/>` + note(x + 70, 344, "B", "middle", 12, "#555");
+    g += `<line x1="${x + 24}" y1="340" x2="${x + 54}" y2="340" stroke="${ACC}" stroke-width="2" stroke-dasharray="3 3"/>`;
+    g += note(x + 20, 400, `${sh * 100} % B`, "middle", 13, "#444");
+  });
+  g += note(0, 440, "the ring's width where it faces B = how much of B", "start", 13, "#666");
+  return panel(8, "Reading the face", "absolute, not counted", "The amount is set by <b>which mark faces B</b>, not by how far you've turned, so you can read it off the table and leave it there.", W3, 470, g);
+})();
+
+const legendPanel = (() => {
+  const rows = [
+    ["Physical", "Meaning", "Camera reads"],
+    ["A knob", "one concept", "cap on its ray"],
+    ["Pull out 1–4", "go deeper", "cap distance"],
+    ["Push in", "drop it", "cap at the rim"],
+    ["Spare out", "grow a concept", "unbound ray"],
+    ["Press cap", "keep the deeper one", "dip, springs home"],
+    ["Flip a knob", "rule out of merges", "ring, not disc"],
+    ["Thick side to B", "more of B", "ring + B bearing"],
+    ["Flip the puck", "exclude (as v1)", "back marker"],
+  ];
+  let g = "";
+  rows.forEach((r, i) => {
+    const y = 26 + i * 37;
+    if (i) g += `<line x1="0" y1="${y - 23}" x2="470" y2="${y - 23}" stroke="#e4e4e4"/>`;
+    r.forEach((t, j) => g += el("text", { x: [0, 128, 300][j], y, "font-size": i ? 14 : 12.5, "font-weight": i ? (j ? 400 : 650) : 600, fill: i ? (j === 2 ? "#777" : "#222") : "#999", "font-family": i && j !== 2 ? "-apple-system, Helvetica" : "SF Mono, Menlo, monospace" }, t));
+  });
+  [["Push in vs flip: in = A ignores it quietly;", 1], ["flipped = the merge actively steers away from it.", 1],
+   ["Open: a re-split idea moves concepts; a knob", 0], ["follows its concept's id, else reads as spare.", 0]]
+    .forEach(([t, h], i) => g += note(0, 372 + i * 20, t, "start", 12.5, h ? "#555" : "#999"));
+  return panel("", "Grammar", "v2 additions", "The whole vocabulary, and what the camera needs to see.", 470, 460, g);
+})();
+
+document.getElementById("row-anatomy").innerHTML = anatomy + mechanism + overview;
+document.getElementById("row-steer-1").innerHTML = deeperPanel + dropPanel + growPanel;
+document.getElementById("row-steer-2").innerHTML = keepPanel + mergePanel + flipPanel;
+document.getElementById("row-turn").innerHTML = mixPanel + facePanel + legendPanel;
+</script>
+</body>
+</html>

@@ -29,30 +29,99 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+/* Landscape screens wide enough for the illustrated scenes (spaceships, cockpit monitor).
+   Phones and portrait tablets get a stacked layout instead. */
+@custom-variant wide (@media (min-width: 768px) and (min-aspect-ratio: 6/5));
+
+/* ---------- Front page ---------- */
+
+/* One scene unit: 1vw on a 16:10 screen, shrinks on short screens so nothing collides vertically. */
+.hero {
+  --u: min(1vw, 1.6svh);
+}
+
+/* Each ship gets three layers with unrelated periods (bob, drift, tilt), so the combined
+   path never visibly repeats and reads as drifting in zero-g rather than a looped bounce. */
+.ship {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: calc(var(--size) * var(--u));
+  z-index: 20;
+}
+.ship-bob {
+  animation: ship-bob var(--bob) ease-in-out var(--delay) infinite alternate;
+}
+.ship-drift {
+  animation: ship-drift var(--drift) ease-in-out var(--delay) infinite alternate;
+}
+.ship-tilt {
+  rotate: var(--rot);
+  animation: ship-tilt var(--tilt) ease-in-out var(--delay) infinite alternate;
+}
+@keyframes ship-bob {
+  from { translate: 0 calc(var(--u) * 0.8); }
+  to   { translate: 0 calc(var(--u) * -0.8); }
+}
+@keyframes ship-drift {
+  from { translate: calc(var(--u) * -0.7) 0; }
+  to   { translate: calc(var(--u) * 0.7) 0; }
+}
+@keyframes ship-tilt {
+  from { rotate: calc(var(--rot) - 2deg); }
+  to   { rotate: calc(var(--rot) + 2deg); }
+}
+.ship a {
+  display: block;
+  border-radius: 9999px;
+  outline: none;
+}
+.ship img {
+  transition: scale 0.35s ease, filter 0.35s ease;
+}
+.ship a:hover img,
+.ship a:focus-visible img {
+  scale: 1.08;
+  filter: drop-shadow(0 0 14px rgba(254, 240, 138, 0.45));
+}
+
+/* ---------- About: text pinned to the cockpit monitor ---------- */
+
+/* The stage is the cockpit art at its native 3:2 ratio, sized like background-size: cover.
+   Vertically it is shifted to keep the monitor centred without exposing an edge. */
+.about-stage {
+  --stage-w: max(100vw, 150svh);
+  --stage-h: calc(var(--stage-w) / 1.5);
+  position: absolute;
+  left: 50%;
+  width: var(--stage-w);
+  height: var(--stage-h);
+  top: clamp(calc(100svh - var(--stage-h)), calc(50svh - 0.426 * var(--stage-h)), 0px);
+  translate: -50% 0;
+  container-type: inline-size;
+}
+/* The monitor's glass, in percent of the artwork. Everything inside is sized in cqw
+   (percent of stage width), so the text wraps identically and always fits at any size. */
+.about-screen {
+  position: absolute;
+  left: 19.8%;
+  top: 17.6%;
+  width: 60.5%;
+  height: 50%;
+  padding: 2cqw 2.4cqw;
+  display: flex;
+  align-items: center;
+  gap: 2.2cqw;
+  font-size: 1.2cqw;
+  line-height: 1.5;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ship-bob,
+  .ship-drift,
+  .ship-tilt {
+    animation: none;
   }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-
-.float-slow {
-  animation: float 8s ease-in-out infinite;
-}
-
-.float-slow-delayed {
-  animation: float 10s ease-in-out infinite;
-  animation-delay: 2s;
-}
-
-.float-slow-delayed-2 {
-  animation: float 9s ease-in-out infinite;
-  animation-delay: 1s;
-}
-
-.float-slow-delayed-3 {
-  animation: float 11s ease-in-out infinite;
-  animation-delay: 3s;
 }
